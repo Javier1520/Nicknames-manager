@@ -3,5 +3,5 @@ from . import views
 
 urlpatterns = [
     path('', views.shorten_url_view, name='short_url'),
-    path('csrf', views.get_csrf_token),
+    path('<str:short_url>', views.get_original_url_view, name='redirect_url'),
 ]
