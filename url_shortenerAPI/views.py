@@ -2,10 +2,12 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from django.shortcuts import redirect
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from rest_framework.permissions import IsAuthenticated
 from .redis_urls import *
 
 @api_view(['POST'])
+@throttle_classes([UserRateThrottle])
 @permission_classes([IsAuthenticated])
 def shorten_url_view(request):
     original_url = request.data.get('original_url')
@@ -14,6 +16,7 @@ def shorten_url_view(request):
     return Response( {'shortened_url': short_url})
 
 @api_view(['GET'])
+@throttle_classes([AnonRateThrottle])
 def get_original_url_view(request, short_url):
     original_url = get_original_url(short_url)
     if original_url:
